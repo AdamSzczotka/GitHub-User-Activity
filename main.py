@@ -116,6 +116,20 @@ def format_event(event):
         return f"- [{formatted_date}] {event_type} on {repo_name}"
 
 
+def get_supported_event_types():
+    """Returns a list of supported event types for filtering"""
+    return [
+        'PushEvent',
+        'CreateEvent',
+        'IssuesEvent',
+        'PullRequestEvent',
+        'WatchEvent',
+        'ForkEvent',
+        'IssueCommentEvent',
+        'ReleaseEvent'
+    ]
+
+
 def main():
     pass
 
