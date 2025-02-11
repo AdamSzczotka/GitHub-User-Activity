@@ -40,6 +40,27 @@ def get_commit_details(commit):
     return f"\n     - {commit['author']['name']}: {message}"
 
 
+def format_event(event):
+    """Format a GitHub event into a redable string with detailed info"""
+
+    event_type = event['type']
+    repo_name = event['repo']['name']
+    created_at = datetime.strptime(event['created_at'],
+                                   '%Y-%m-%dT%H:%M:%SZ')
+    formatted_date = created_at.strftime('%Y-%m-%d %H:%M:%S')
+
+    if event_type == 'PushEvent':
+
+        commits = event['payload'].get('commits', [])
+        commit_details = ''.join(get_commit_details(commit)
+                                 for commit in commits)
+        branch = event['payload']['ref'].split('/')[-1]
+
+        return (f"- [{formatted_date}] Pushed "
+                f"{len(commits)} commits to {repo_name} on branch '{branch}'"
+                f"{commit_details}")
+
+
 def main():
     pass
 
