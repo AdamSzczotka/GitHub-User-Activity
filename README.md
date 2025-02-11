@@ -2,6 +2,8 @@
 
 A command-line interface tool to fetch and display GitHub user activity. This tool allows you to view recent GitHub activities of any user, with options to filter by event type and display detailed information about each activity.
 
+Project inspired by [GitHub User Activity Project](https://roadmap.sh/projects/github-user-activity)
+
 ## Features
 
 - Fetch recent GitHub activity for any public GitHub user
