@@ -131,7 +131,43 @@ def get_supported_event_types():
 
 
 def main():
-    pass
+    parser = argparse.ArgumentParser(
+        description="Fetch and display user activity")
+    parser.add_argument('username', help='Github username')
+    parser.add_argument('--type', choices=get_supported_event_types(),
+                        help='Filter events by type')
+    parser.add_argument('--list-types', action='store_true',
+                        help='List supported event types')
+
+    args = parser.parse_args()
+
+    if args.list_types:
+        print("Supported event types:")
+        for event_type in get_supported_event_types():
+            print(f"  - {event_type}")
+        return
+
+    print(f"Fetching recent GitHub activity for user: {args.username}")
+    if args.type:
+        print(f"Filtering for event type: {args.type}")
+    print("-" * 60)
+
+    events = fetch_github_activity(args.username)
+
+    if not events:
+        print("No recent activity found.")
+        return
+
+    filtered_events = [e for e in events if
+                       not args.type or e['type'] == args.type]
+
+    if not filtered_events:
+        print(f"No events found matching type: {args.type}")
+        return
+
+    for event in filtered_events:
+        print(format_event(event))
+        print()
 
 
 if __name__ == "__main__":
