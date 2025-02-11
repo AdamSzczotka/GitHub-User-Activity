@@ -50,7 +50,6 @@ def format_event(event):
     formatted_date = created_at.strftime('%Y-%m-%d %H:%M:%S')
 
     if event_type == 'PushEvent':
-
         commits = event['payload'].get('commits', [])
         commit_details = ''.join(get_commit_details(commit)
                                  for commit in commits)
@@ -59,6 +58,62 @@ def format_event(event):
         return (f"- [{formatted_date}] Pushed "
                 f"{len(commits)} commits to {repo_name} on branch '{branch}'"
                 f"{commit_details}")
+
+    elif event_type == 'CreateEvent':
+        ref_type = event['payload']['ref_type']
+        ref = event['payload'].get('ref', '')
+        description = f" named '{ref};" if ref else ""
+
+        return (f"- [{formatted_date} "
+                f"Created {ref_type}{description} in {repo_name}")
+
+    elif event_type == 'IssuesEvent':
+        action = event['payload']['action']
+        issue = event['payload']['issue']
+        issue_number = issue['number']
+        issue_title = issue['title']
+        return (f"- [{formatted_date}] {action.capitalize()} "
+                f"issue #{issue_number} in {repo_name}\n"
+                f"      Title: {issue_title}\n"
+                f"      URL: {issue['html_url']}")
+
+    elif event_type == 'PullRequestEvent':
+        action = event['payload']['action']
+        pr = event['payload']['pull_request']
+        pr_number = pr['number']
+        pr_title = pr['title']
+
+        return (f"- [{formatted_date}] {action.capitalize()} pull request "
+                f"#{pr_number} in {repo_name}\n"
+                f"      Title: {pr_title}\n"
+                f"      Changes: +{pr['additions']}, -{pr['deletions']}\n"
+                f"      URL: {pr['html_url']}")
+
+    elif event_type == 'WatchEvent':
+        return f"- [{formatted_date}] Starred {repo_name}"
+
+    elif event_type == 'ForkEvent':
+        fork_name = event['payload']['forkee']['full_name']
+        return (f"- [{formatted_date}] Forked {repo_name}\n"
+                f"      Fork: {fork_name}")
+
+    elif event_type == 'IssueCommentEvent':
+        issue_number = event['payload']['issue']['number']
+        comment = event['payload']['comment']['body']
+        preview = comment[:100] + '...' if len(comment) > 100 else comment
+        return (f"- [{formatted_date}] Commented on issue #{issue_number} "
+                f"in {repo_name}\n"
+                f"      Comment preview: {preview}")
+
+    elif event_type == 'ReleaseEvent':
+        release = event['payload']['release']
+        return (f"- [{formatted_date}] Published release "
+                f"{release['tag_name']} in {repo_name}\n"
+                f"      Title: {release['name']}\n"
+                f"      URL: {release['html_url']}")
+
+    else:
+        return f"- [{formatted_date}] {event_type} on {repo_name}"
 
 
 def main():
