@@ -22,8 +22,8 @@ A command-line interface tool to fetch and display GitHub user activity. This to
 
 1. Clone this repository:
 ```bash
-git clone https://github.com/yourusername/github-activity-cli
-cd github-activity-cli
+git clone https://github.com/AdamSzczotka/GitHub-User-Activity
+cd GitHub-User-Activity
 ```
 
 2. Install requirements:
