@@ -33,6 +33,13 @@ def fetch_github_activity(username):
         sys.exit(1)
 
 
+def get_commit_details(commit):
+    """Format commit details into a readable string."""
+
+    message = commit['message'].split('\n')[0]
+    return f"\n     - {commit['author']['name']}: {message}"
+
+
 def main():
     pass
 
